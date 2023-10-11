@@ -4,19 +4,12 @@ on:
   push:
     branches:
       - "**"
-      - "!master"
-      - "!develop"
-  pull_request:
-    types:
-      - closed
-    branches:
-      - "master"
-      - "develop"
     paths:
       - "**/src/main/**"
       - "**pom.xml"
       - "Dockerfile"
       - ".github/workflows/deploy.yml"
+
 
 jobs:
   build:
@@ -29,9 +22,9 @@ jobs:
       - name: Set Dynamic Env Matrix
         id: setmatrix
         run: |
-          if [ ${{ github.event.pull_request.base.ref == 'master' }} == true ]; then 
+          if [ ${{ github.ref	 == 'refs/heads/master' }} == true ]; then 
             matrixStringifiedObject="{\"include\":[{\"environment\":\"uat\", \"env_short\": \"u\"},{\"environment\":\"prod\", \"env_short\": \"p\"}]}"
-          elif [ ${{ github.event.pull_request.base.ref == 'develop' }} == true ]; then
+          elif [ ${{ github.ref	 == 'refs/heads/develop' }} == true ]; then
             matrixStringifiedObject="{\"include\":[{\"environment\":\"dev\", \"env_short\": \"d\"}]}"        
           else
             matrixStringifiedObject=""
@@ -62,7 +55,6 @@ jobs:
         uses: cycjimmy/semantic-release-action@bdd914ff2423e2792c73475f11e8da603182f32d
         with:
           semantic_version: 18.0.0
-          ci: false
           extra_plugins: |
             @semantic-release/release-notes-generator@10.0.3
             @semantic-release/git@10.0.1
