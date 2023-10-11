@@ -39,6 +39,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
+      
     strategy:
         matrix: ${{ fromJson(needs.build.outputs.matrix) }}
          
